@@ -1,0 +1,22 @@
+{
+    "files": [
+        "MainWindow.py",
+        "NavigationManager.py",
+        "database.py",
+        "UserPage.py",
+        "AuthPage.py",
+        "UserHome.py",
+        "AdminPanel.py",
+        "UserPage.ui",
+        "AuthPage.ui",
+        "UserHome.ui",
+        "AdminPanel.ui"
+    ],
+    "python_interpreter": "/usr/bin/python3",
+    "run_configuration": {
+        "script": "MainWindow.py",
+        "working_directory": ".",
+        "command_line_arguments": ""
+    },
+    "version": 1
+}
