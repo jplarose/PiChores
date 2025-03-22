@@ -10,13 +10,14 @@
         "UserPage.ui",
         "AuthPage.ui",
         "UserHome.ui",
-        "AdminPanel.ui"
+        "AdminPanel.ui",
+        "ChoreLog.ui"
     ],
     "python_interpreter": "/usr/bin/python3",
     "run_configuration": {
+        "command_line_arguments": "",
         "script": "MainWindow.py",
-        "working_directory": ".",
-        "command_line_arguments": ""
+        "working_directory": "."
     },
     "version": 1
 }
