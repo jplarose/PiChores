@@ -11,7 +11,8 @@
         "AuthPage.ui",
         "UserHome.ui",
         "AdminPanel.ui",
-        "ChoreLog.ui"
+        "ChoreLog.ui",
+        "ChoreLog.py"
     ],
     "python_interpreter": "/usr/bin/python3",
     "run_configuration": {

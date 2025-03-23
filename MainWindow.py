@@ -19,6 +19,7 @@ class MainWindow(QWidget):
         userHome = UserHome(self.navigator)
         adminAuthPage = AuthPage(self.navigator)
         adminPanel = AdminPanel(self.navigator)
+        ChoreLog = ChoreLog(self.navigator)
 
         # Register pages in the navigation system
         self.navigator.add_page("userPage", userPage)
@@ -26,6 +27,7 @@ class MainWindow(QWidget):
         self.navigator.add_page("userHome", userHome)
         self.navigator.add_page("AdminAuthPage", adminAuthPage)
         self.navigator.add_page("AdminPanel", adminPanel)
+        self.navigator.add_page("ChoreLog", ChoreLog)
 
         # Start on UserPage
         self.navigator.navigate_to("userPage")

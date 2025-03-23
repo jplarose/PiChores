@@ -20,6 +20,8 @@ class UserHome(QWidget):
         self.navigator = navigator
         uic.loadUi("UserHome.ui", self)
 
+        self.logout_button.clicked.connect(lambda:self.handle_logout)
+
         #self.adminPanelBtn.clicked.connect(lambda: self.navigator.navigate_to("AdminPanel"))
 
     def update_page(self, user):
@@ -27,5 +29,14 @@ class UserHome(QWidget):
 
         earning_date = datetime.datetime.strptime(get_current_date_string() + '-1', '%G-W%V-%u')
         self.earnings_box.setTitle(f"Week of {earning_date}")
+
+        # Calculate earnings for the week/year
+
+
+    # Click the log chore button
+
+    def handle_logout():
+        self.navigator.navigate_to("userPage")
+
 
 
