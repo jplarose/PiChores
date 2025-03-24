@@ -16,6 +16,6 @@ class UserPage(QWidget):
         layout = self.findChild(QVBoxLayout, "userLayout")
         for user in users:
             btn = QPushButton(user.name)
-            btn.setFixedHeight(60)  # Large button for touchscreens
+            btn.setFixedHeight(160)  # Large button for touchscreens
             btn.clicked.connect(lambda checked, u=user: self.navigator.navigate_to("authPage", u))
             layout.addWidget(btn)

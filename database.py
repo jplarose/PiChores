@@ -1,4 +1,4 @@
-import datetime
+from datetime import date
 import sqlite3
 from collections import namedtuple
 from pathlib import Path
@@ -73,36 +73,65 @@ def get_user_pin(user_id):
 
 def get_weeks_earnings(user_id, week_of_date):
     sql = (
-        "SELECT * "
-        "FROM ChoreLog " 
-        f"WHERE UserId = {user_id} "
-        f"AND TimeStamp IN('{week_of_date}', DateTime())"
+        "SELECT cl.Id AS Id, c.ChoreValue AS ChoreValue "
+        "FROM ChoreLog cl "
+        "INNER JOIN Chores c ON c.Id = cl.ChoreId "
+        "WHERE cl.UserId = ? "
+        "AND cl.DateCompleted BETWEEN ? AND DateTime()"
     )
+
+    params = (user_id, week_of_date)
 
     try:
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
-        cursor.execute(sql)
-        result = cursor.fetchall()
+        cursor.execute(sql, params)
+        Earning = namedtuple("Earning", ["ChoreValue", "Id"])
+        earnings = [Earning(*row) for row in cursor.fetchall()]
         cursor.close()
         conn.close()
-        return result
+        return earnings
     except Exception as e:
         print(f"Database error: {e}")
         return None
 
 def get_years_earnings(user_id):
     sql = (
-        "SELECT * "
-        "FROM ChoreLog "
-        f"WHERE UserId = {user_id} "
-        f"AND TimeStamp IN('{datetime.date.year}', DateTime())"
+        "SELECT cl.Id AS Id, c.ChoreValue AS ChoreValue "
+        "FROM ChoreLog cl "
+        "INNER JOIN Chores c ON c.Id = cl.ChoreId "
+        "WHERE cl.UserId = ? "
+        "AND cl.DateCompleted BETWEEN ? AND DateTime()"
     )
+
+    start_of_year = date.today().replace(month=1, day=1)
+    params = (user_id, start_of_year.isoformat())
 
     try:
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
-        cursor.execute(sql)
+        cursor.execute(sql, params)
+        Earning = namedtuple("Earning", ["ChoreValue", "Id"])
+        earnings = [Earning(*row) for row in cursor.fetchall()]
+        cursor.close()
+        conn.close()
+        return earnings
+    except Exception as e:
+        print(f"Database error: {e}")
+        return None
+
+def log_chore(user_id, chore_id, date_completed):
+    sql = (
+        "INSERT INTO ChoreLog(UserId, ChoreId, DateCompleted) "
+        "VALUES (?, ?, ?)"
+    )
+
+    params = (user_id, chore_id, date_completed)
+
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute(sql, params)
         result = cursor.fetchall()
         cursor.close()
         conn.close()
@@ -111,20 +140,24 @@ def get_years_earnings(user_id):
         print(f"Database error: {e}")
         return None
 
-def log_chore(user_id, chore_id, date):
+def get_users_chores(user_id):
     sql = (
-        "INSERT INTO ChoreLog(UserId, ChoreId, DateCompleted) "
-        f"VALUES ({user_id}, {chore_id}, '{date}')"
+        "SELECT ChoreName AS Name, Id AS Id "
+        "FROM Chores "
+        "WHERE UserId = ?"
     )
+
+    params = (user_id,)
 
     try:
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
-        cursor.execute(sql)
-        result = cursor.fetchall()
+        cursor.execute(sql, params)
+        Chore = namedtuple("Chore", ["Name", "Id"])
+        chores = [Chore(*row) for row in cursor.fetchall()]
         cursor.close()
         conn.close()
-        return result
+        return chores
     except Exception as e:
         print(f"Database error: {e}")
         return None

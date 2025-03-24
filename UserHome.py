@@ -1,4 +1,5 @@
 import datetime
+from database import get_weeks_earnings, get_years_earnings
 
 from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget
@@ -17,25 +18,42 @@ def get_current_date_string():
 class UserHome(QWidget):
     def __init__(self, navigator):
         super().__init__()
+        self.user = None
         self.navigator = navigator
         uic.loadUi("UserHome.ui", self)
 
-        self.logout_button.clicked.connect(lambda:self.handle_logout)
-
-        #self.adminPanelBtn.clicked.connect(lambda: self.navigator.navigate_to("AdminPanel"))
+        self.logout_button.clicked.connect(lambda: self.handle_logout())
+        self.logChoresButton.clicked.connect(lambda: self.handle_log_chores())
 
     def update_page(self, user):
+        self.user = user
         self.welcomeLabel.setText(f"Welcome, {user.name}!")
 
         earning_date = datetime.datetime.strptime(get_current_date_string() + '-1', '%G-W%V-%u')
         self.earnings_box.setTitle(f"Week of {earning_date}")
 
-        # Calculate earnings for the week/year
+
+        """Calculate earnings for the week/year"""
+        week_earnings = get_weeks_earnings(user.id, earning_date)
+        year_earnings = get_years_earnings(user.id)
+
+        week_earned = sum(e.ChoreValue for e in week_earnings)
+        year_earned = sum(e.ChoreValue for e in year_earnings)
+
+        self.week_earned_value.setText(f"${week_earned:,.2f}")
+        self.week_earned_value.setEnabled(True)
+        self.week_earned_value.setStyleSheet("color: green;")
+
+        self.year_earned_value.setText(f"${year_earned:,.2f}")
+        self.year_earned_value.setEnabled(True)
+        self.year_earned_value.setStyleSheet("color: green;")
 
 
     # Click the log chore button
+    def handle_log_chores(self):
+        self.navigator.navigate_to("ChoreLog", self.user)
 
-    def handle_logout():
+    def handle_logout(self):
         self.navigator.navigate_to("userPage")
 
 
