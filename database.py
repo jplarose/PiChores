@@ -1,16 +1,16 @@
-from datetime import date
+from datetime import date, datetime, timedelta
 import sqlite3
 from collections import namedtuple
 from pathlib import Path
 
 DB_PATH = Path(__file__).with_name("Chores.db")
 
-def log_action(user_id, action, message=""):
+def log_action(user_id, action, message=None):
     """Log user actions and any associated errors"""
 
     sql = (
         "INSERT INTO Logs(UserId, Action, Message) "
-        "VALUES ?, ?, ?"
+        "VALUES (?, ?, ?)"
     )
 
     params = (user_id, action, message)
@@ -24,6 +24,41 @@ def log_action(user_id, action, message=""):
     except Exception as e:
         print(f"Database error: {e}")
         return None
+
+def was_chore_logged_recently(user_id, chore_id, selected_date, frequency):
+    """Check if a chore has already been logged today or this week"""
+    sql = """
+        SELECT DateCompleted FROM ChoreLog
+        WHERE UserId = ? AND ChoreId = ?
+    """
+
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            cursor.execute(sql, (user_id, chore_id))
+            rows = cursor.fetchall()
+
+            for (date_str,) in rows:
+                logged_date = datetime.strptime(date_str, "%Y-%m-%d %H:%M")
+
+                if frequency == "daily":
+                    if logged_date.date() == selected_date.date():
+                        return True
+
+                elif frequency == "weekly":
+                    # Monday = 0, Sunday = 6
+                    weekday = selected_date.weekday()
+                    start_of_week = selected_date - timedelta(days=weekday)
+                    end_of_week = start_of_week + timedelta(days=6)
+
+                    if start_of_week.date() <= logged_date.date() <= end_of_week.date():
+                        return True
+
+            return False
+    except Exception as e:
+        print(f"Error checking chore frequency: {e}")
+        return False
+
 
 def get_users():
     """Fetch users from the database as named tuples."""

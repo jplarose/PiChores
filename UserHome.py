@@ -1,5 +1,5 @@
 import datetime
-from database import get_weeks_earnings, get_years_earnings
+from database import get_weeks_earnings, get_years_earnings, log_action
 
 from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget
@@ -37,10 +37,6 @@ class UserHome(QWidget):
         week_earnings = get_weeks_earnings(user.Id, earning_date)
         year_earnings = get_years_earnings(user.Id)
 
-        print(len(week_earnings))
-        for e in week_earnings:
-            print(f"Chore {e.Id} is worth {e.ChoreValue}")
-
         week_earned = sum(e.ChoreValue for e in week_earnings)
         year_earned = sum(e.ChoreValue for e in year_earnings)
 
@@ -58,6 +54,7 @@ class UserHome(QWidget):
         self.navigator.navigate_to("ChoreLog", self.user)
 
     def handle_logout(self):
+        log_action(self.user.Id, "Logout", f"User {self.user.Id} logged out.")
         self.navigator.navigate_to("userPage")
 
 
