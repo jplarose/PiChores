@@ -5,6 +5,7 @@ from AuthPage import AuthPage
 from UserHome import UserHome
 from AdminPanel import AdminPanel
 from ChoreLog import ChoreLog
+from ChorePage import ChorePage
 
 class MainWindow(QWidget):
     def __init__(self):
@@ -21,6 +22,7 @@ class MainWindow(QWidget):
         adminAuthPage = AuthPage(self.navigator)
         adminPanel = AdminPanel(self.navigator)
         choreLog = ChoreLog(self.navigator)
+        chorePage = ChorePage(self.navigator)
 
         # Register pages in the navigation system
         self.navigator.add_page("userPage", userPage)
@@ -29,6 +31,7 @@ class MainWindow(QWidget):
         self.navigator.add_page("AdminAuthPage", adminAuthPage)
         self.navigator.add_page("AdminPanel", adminPanel)
         self.navigator.add_page("ChoreLog", choreLog)
+        self.navigator.add_page("ChorePage", chorePage)
 
         # Start on UserPage
         self.navigator.navigate_to("userPage")

@@ -5,11 +5,31 @@ from pathlib import Path
 
 DB_PATH = Path(__file__).with_name("Chores.db")
 
+def log_action(user_id, action, message=""):
+    """Log user actions and any associated errors"""
+
+    sql = (
+        "INSERT INTO Logs(UserId, Action, Message) "
+        "VALUES ?, ?, ?"
+    )
+
+    params = (user_id, action, message)
+
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            cursor.execute(sql, params)
+            conn.commit()
+            return True
+    except Exception as e:
+        print(f"Database error: {e}")
+        return None
+
 def get_users():
     """Fetch users from the database as named tuples."""
 
     sql = (
-    "SELECT Name AS name, Id as id "
+    "SELECT Name AS Name, Id as Id "
     "FROM Users "
     "WHERE IsVisible = 1"
     )
@@ -18,7 +38,7 @@ def get_users():
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
         cursor.execute(sql)
-        User = namedtuple("User", ["name", "id"])
+        User = namedtuple("User", ["Name", "Id"])
         users = [User(*row) for row in cursor.fetchall()]
         cursor.close()
         conn.close()
@@ -86,7 +106,7 @@ def get_weeks_earnings(user_id, week_of_date):
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
         cursor.execute(sql, params)
-        Earning = namedtuple("Earning", ["ChoreValue", "Id"])
+        Earning = namedtuple("Earning", ["Id", "ChoreValue"])
         earnings = [Earning(*row) for row in cursor.fetchall()]
         cursor.close()
         conn.close()
@@ -111,7 +131,7 @@ def get_years_earnings(user_id):
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
         cursor.execute(sql, params)
-        Earning = namedtuple("Earning", ["ChoreValue", "Id"])
+        Earning = namedtuple("Earning", ["Id", "ChoreValue"])
         earnings = [Earning(*row) for row in cursor.fetchall()]
         cursor.close()
         conn.close()
@@ -129,20 +149,18 @@ def log_chore(user_id, chore_id, date_completed):
     params = (user_id, chore_id, date_completed)
 
     try:
-        conn = sqlite3.connect(DB_PATH)
-        cursor = conn.cursor()
-        cursor.execute(sql, params)
-        result = cursor.fetchall()
-        cursor.close()
-        conn.close()
-        return result
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            cursor.execute(sql, params)
+            conn.commit()
+            return True
     except Exception as e:
         print(f"Database error: {e}")
-        return None
+        return e
 
 def get_users_chores(user_id):
     sql = (
-        "SELECT ChoreName AS Name, Id AS Id "
+        "SELECT ChoreName AS Name, Id AS Id, Frequency AS Frequency "
         "FROM Chores "
         "WHERE UserId = ?"
     )
@@ -153,7 +171,7 @@ def get_users_chores(user_id):
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
         cursor.execute(sql, params)
-        Chore = namedtuple("Chore", ["Name", "Id"])
+        Chore = namedtuple("Chore", ["Name", "Id", "Frequency"])
         chores = [Chore(*row) for row in cursor.fetchall()]
         cursor.close()
         conn.close()

@@ -12,7 +12,9 @@
         "UserHome.ui",
         "AdminPanel.ui",
         "ChoreLog.ui",
-        "ChoreLog.py"
+        "ChoreLog.py",
+        "ChorePage.ui",
+        "ChorePage.py"
     ],
     "python_interpreter": "/usr/bin/python3",
     "run_configuration": {

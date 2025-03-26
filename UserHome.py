@@ -27,15 +27,19 @@ class UserHome(QWidget):
 
     def update_page(self, user):
         self.user = user
-        self.welcomeLabel.setText(f"Welcome, {user.name}!")
+        self.welcomeLabel.setText(f"Welcome, {user.Name}!")
 
         earning_date = datetime.datetime.strptime(get_current_date_string() + '-1', '%G-W%V-%u')
         self.earnings_box.setTitle(f"Week of {earning_date}")
 
 
         """Calculate earnings for the week/year"""
-        week_earnings = get_weeks_earnings(user.id, earning_date)
-        year_earnings = get_years_earnings(user.id)
+        week_earnings = get_weeks_earnings(user.Id, earning_date)
+        year_earnings = get_years_earnings(user.Id)
+
+        print(len(week_earnings))
+        for e in week_earnings:
+            print(f"Chore {e.Id} is worth {e.ChoreValue}")
 
         week_earned = sum(e.ChoreValue for e in week_earnings)
         year_earned = sum(e.ChoreValue for e in year_earnings)

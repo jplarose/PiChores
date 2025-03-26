@@ -31,7 +31,8 @@ class AuthPage(QWidget):
         """Update page content when a user is selected."""
         self.user = user
         self.entered_pin = ""
-        self.pin_display.setText("••••")
+        self.pin_display.setText("ADMIN")
+        self.pin_displat.setStyleSheet("color: green")
 
     def handle_keypad_input(self, key):
         """Handle PIN input from the keypad."""

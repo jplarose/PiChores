@@ -1,6 +1,6 @@
 from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget
-from database import get_user_pin
+from database import get_user_pin, log_action
 
 class AuthPage(QWidget):
     """Authentication Page - Loaded from Qt Designer UI file."""
@@ -47,10 +47,12 @@ class AuthPage(QWidget):
 
     def check_pin(self):
         """Check the PIN and navigate if correct."""
-        stored_pin = get_user_pin(self.user.id)
+        stored_pin = get_user_pin(self.user.Id)
         if self.entered_pin == stored_pin:
-            print(f"User {self.user.name} authenticated!")
+            #print(f"User {self.user.Name} authenticated!")
+            log_action(self.user.Id, "Sign-In", f"User {self.user.Id} successfully signed in.")
             self.navigator.navigate_to("userHome", self.user)
         else:
+            log_action(self.user.Id, "Sign-In", f"User {self.user.Id} sign-in failed.")
             self.pin_display.setText("Incorrect PIN!")
             self.entered_pin = ""
