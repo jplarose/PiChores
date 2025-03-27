@@ -33,7 +33,7 @@
     <widget class="QLabel" name="pin_display">
      <property name="font">
       <font>
-       <pointsize>-1</pointsize>
+       <pointsize>1</pointsize>
        <kerning>true</kerning>
       </font>
      </property>

@@ -24,6 +24,7 @@ class UserHome(QWidget):
 
         self.logout_button.clicked.connect(lambda: self.handle_logout())
         self.logChoresButton.clicked.connect(lambda: self.handle_log_chores())
+        self.viewloggedchoresbutton.clicked.connect(lambda: self.handle_view_chores())
 
     def update_page(self, user):
         self.user = user
@@ -56,6 +57,9 @@ class UserHome(QWidget):
     def handle_logout(self):
         log_action(self.user.Id, "Logout", f"User {self.user.Id} logged out.")
         self.navigator.navigate_to("userPage")
+
+    def handle_view_chores(self):
+        self.navigator.navigate_to("UserLoggedChores", self.user)
 
 
 

@@ -50,3 +50,16 @@ class NavigationManager(QStackedWidget):
             self.setCurrentWidget(page)
         else:
             log_action(user.id if user is not None else 1, f"Admin Page '{page_name}' not found!")
+
+    def navigate_to_selected_chore(self, page_name, user=None, selected_date=None):
+        """Passes user data dynamically and switches pages."""
+        if page_name in self.pages:
+            page = self.pages[page_name]
+
+            # If the page supports dynamic updates, refresh its content
+            if hasattr(page, "update_page"):
+                page.update_page(user, selected_date)
+
+            self.setCurrentWidget(page)
+        else:
+            log_action(user.id if user is not None else 1, f"Page '{page_name}' not found!")

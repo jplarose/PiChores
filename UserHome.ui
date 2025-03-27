@@ -605,6 +605,25 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="viewloggedchoresbutton">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>90</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>25</pointsize>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Logged Chores</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="logChoresButton">
        <property name="minimumSize">
         <size>
