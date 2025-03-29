@@ -238,6 +238,7 @@ def fetch_chores_for_date(selected_date, user_id):
         return None
 
 def delete_chore_by_id(chore_id):
+    """TODO!!!"""
     pass
 
 def get_chore_dates_in_week(start_date, user_id):

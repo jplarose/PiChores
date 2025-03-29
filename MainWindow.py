@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout
+from PyQt5 import QtCore
 from NavigationManager import NavigationManager
 from UserPage import UserPage
 from AuthPage import AuthPage
@@ -8,12 +9,16 @@ from ChoreLog import ChoreLog
 from ChorePage import ChorePage
 from UserLoggedChores import UserLoggedChores
 from DayLogPopup import DayLogPopup
+import os
+import sys
+
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Chores App")
-        self.setGeometry(100, 100, 800, 480)  # Exact touchscreen dimensions
+        self.setGeometry(0, 0, 800, 480)  # Exact touchscreen dimensions
 
         self.navigator = NavigationManager()
 
@@ -48,7 +53,10 @@ class MainWindow(QWidget):
 
 if __name__ == "__main__":
     app = QApplication([])
+   # app.setOverrideCursor(QtCore.Qt.BlankCursor)
     window = MainWindow()
-#    window.showFullScreen()  # Runs in fullscreen mode for the touchscreen
+   # window.showFullScreen()  # Runs in fullscreen mode for the touchscreen
     window.show()
+    window.setFixedSize(800, 480)
+    window.move(0,0)
     app.exec_()

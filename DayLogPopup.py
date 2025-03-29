@@ -1,74 +1,58 @@
-from PyQt5.QtWidgets import (
-    QDialog, QVBoxLayout, QLabel, QListWidget, QListWidgetItem,
-    QWidget, QHBoxLayout, QPushButton, QMessageBox, QSizePolicy
-)
+from PyQt5.QtWidgets import QDialog, QListWidgetItem, QWidget, QHBoxLayout, QLabel, QPushButton, QMessageBox
+from PyQt5 import uic
 from PyQt5.QtCore import Qt
-
-from ChoreLog import clear_layout
 from database import fetch_chores_for_date, delete_chore_by_id
 
-class DayLogPopup(QDialog):
+class DayLogPopup(QWidget):
     def __init__(self, navigator):
         super().__init__()
-
-        main_layout = QVBoxLayout()
-        self.setLayout(main_layout)
-
-        self.list_widget = None
-        self.label = None
-        self.selected_date = None
-        self.back_button = None
         self.navigator = navigator
+        self.user = None
+        self.selected_date = None
+
+        # Load the UI from the .ui file.
+        uic.loadUi("DayLogPopup.ui", self)
+
+        # The following widgets are now defined in the .ui file:
+        #   self.headerLabel, self.listWidget, self.backButton
+
+        # Connect the back button.
+        self.backButton.clicked.connect(self.go_back)
+
+        # Set fixed size.
         self.setMinimumSize(800, 480)
         self.setMaximumSize(800, 480)
-
-        self.user = None
 
     def update_page(self, user, selected_date):
         self.user = user
         self.selected_date = selected_date
 
-        # Clear current layout contents
-        layout = self.layout()
-        while layout.count():
-            item = layout.takeAt(0)
-            widget = item.widget()
-            if widget:
-                widget.setParent(None)
+        # Update the header label with the selected date.
+        self.headerLabel.setText(f"Chores for {selected_date}")
 
-        # Rebuild widgets
-        self.label = QLabel(f"Chores for {selected_date}")
-        self.label.setStyleSheet("font-size: 20px; font-weight: bold;")
-        self.label.setAlignment(Qt.AlignCenter)
-        layout.addWidget(self.label)
-
-        self.list_widget = QListWidget()
-        layout.addWidget(self.list_widget)
-
-        self.back_button = QPushButton("← Back")
-        self.back_button.setStyleSheet("font-size: 18px; padding: 10px;")
-        self.back_button.clicked.connect(self.go_back)
-        layout.addWidget(self.back_button)
-
+        # Load the chores dynamically.
         self.load_chores()
 
     def load_chores(self):
-        self.list_widget.clear()
+        self.listWidget.clear()
         chores = fetch_chores_for_date(self.selected_date, self.user.Id)
 
         if not chores:
-            self.list_widget.addItem(QListWidgetItem("No chores logged for this day."))
+            self.listWidget.addItem(QListWidgetItem("No chores logged for this day."))
             return
 
         for chore_id, description, timestamp in chores:
+            # Create a custom widget for the list item.
             item_widget = QWidget()
             row_layout = QHBoxLayout()
             row_layout.setContentsMargins(10, 5, 10, 5)
 
+            # Create a label to show chore description and timestamp.
             label = QLabel(f"{description} @ {timestamp}")
             label.setStyleSheet("font-size: 16px;")
             row_layout.addWidget(label)
 
+            # Create a delete button.
             delete_btn = QPushButton("❌")
             delete_btn.setFixedSize(40, 40)
             delete_btn.setStyleSheet("""
@@ -83,15 +67,16 @@ class DayLogPopup(QDialog):
                 }
             """)
             delete_btn.clicked.connect(lambda _, cid=chore_id: self.delete_chore(cid))
-
             row_layout.addWidget(delete_btn)
+
             item_widget.setLayout(row_layout)
 
+            # Create a QListWidgetItem and set its size hint.
             list_item = QListWidgetItem()
             list_item.setSizeHint(item_widget.sizeHint())
 
-            self.list_widget.addItem(list_item)
-            self.list_widget.setItemWidget(list_item, item_widget)
+            self.listWidget.addItem(list_item)
+            self.listWidget.setItemWidget(list_item, item_widget)
 
     def delete_chore(self, chore_id):
         confirm = QMessageBox.question(
@@ -101,15 +86,7 @@ class DayLogPopup(QDialog):
         )
         if confirm == QMessageBox.Yes:
             delete_chore_by_id(chore_id)
-            self.load_chores()  # Reload list after deletion
+            self.load_chores()  # Reload the list after deletion.
 
     def go_back(self):
         self.navigator.navigate_to("UserLoggedChores", self.user)
-
-    def clear_layout(layout):
-        while layout.count():
-            item = layout.takeAt(0)
-            widget = item.widget()
-            if widget:
-                widget.setParent(None)
-

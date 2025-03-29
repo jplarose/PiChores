@@ -17,7 +17,8 @@
         "ChorePage.py",
         "UserLoggedChores.ui",
         "UserLoggedChores.py",
-        "DayLogPopup.py"
+        "DayLogPopup.py",
+        "DayLogPopup.ui"
     ],
     "python_interpreter": "/usr/bin/python3",
     "run_configuration": {
