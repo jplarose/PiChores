@@ -41,7 +41,7 @@ class DayLogPopup(QWidget):
             self.listWidget.addItem(QListWidgetItem("No chores logged for this day."))
             return
 
-        for chore_id, description, timestamp in chores:
+        for chore_log_id, description, timestamp in chores:
             # Create a custom widget for the list item.
             item_widget = QWidget()
             row_layout = QHBoxLayout()
@@ -66,7 +66,7 @@ class DayLogPopup(QWidget):
                     background-color: #ff4444;
                 }
             """)
-            delete_btn.clicked.connect(lambda _, cid=chore_id: self.delete_chore(cid))
+            delete_btn.clicked.connect(lambda _, cid=chore_log_id: self.delete_chore(cid))
             row_layout.addWidget(delete_btn)
 
             item_widget.setLayout(row_layout)
@@ -78,14 +78,25 @@ class DayLogPopup(QWidget):
             self.listWidget.addItem(list_item)
             self.listWidget.setItemWidget(list_item, item_widget)
 
-    def delete_chore(self, chore_id):
-        confirm = QMessageBox.question(
-            self, "Confirm Delete",
-            "Are you sure you want to delete this chore?",
-            QMessageBox.Yes | QMessageBox.No
-        )
-        if confirm == QMessageBox.Yes:
-            delete_chore_by_id(chore_id)
+    def delete_chore(self, chore_log_id):
+        delete_confirm_box = QMessageBox(self)
+
+        # Remove the title bar and window frame
+        delete_confirm_box.setWindowFlags(Qt.Popup | Qt.FramelessWindowHint)
+
+        # Increase font sizes and button padding for touch friendliness
+        delete_confirm_box.setStyleSheet("""
+                    QLabel { font-size: 20pt; }
+                    QPushButton { font-size: 20pt; padding: 15px 25px; }
+                    QMessageBox { background-color: white; }
+                """)
+        delete_confirm_box.setIcon(QMessageBox.Warning)
+        delete_confirm_box.setWindowTitle("Delete?")
+        delete_confirm_box.setText("Are you sure you want to delete this chore?")
+        delete_confirm_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+
+        if delete_confirm_box.exec_() == QMessageBox.Yes:
+            delete_chore_by_id(chore_log_id)
             self.load_chores()  # Reload the list after deletion.
 
     def go_back(self):

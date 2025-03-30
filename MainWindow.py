@@ -45,7 +45,7 @@ class MainWindow(QWidget):
         self.navigator.add_page("DayLogPopup", dayLogPopup)
 
         # Start on UserPage
-        self.navigator.navigate_to("userPage")
+        self.navigator.navigate_to_admin("userPage", None, False)
 
         layout = QVBoxLayout()
         layout.addWidget(self.navigator)

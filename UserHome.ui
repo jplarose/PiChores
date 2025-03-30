@@ -590,11 +590,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Logout</string>
-       </property>
-       <property name="icon">
-        <iconset theme="go-previous">
-         <normaloff>.</normaloff>.</iconset>
+        <string>← Logout</string>
        </property>
        <property name="iconSize">
         <size>

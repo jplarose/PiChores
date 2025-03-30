@@ -56,7 +56,7 @@ class UserHome(QWidget):
 
     def handle_logout(self):
         log_action(self.user.Id, "Logout", f"User {self.user.Id} logged out.")
-        self.navigator.navigate_to("userPage")
+        self.navigator.navigate_to_admin("userPage", None, False)
 
     def handle_view_chores(self):
         self.navigator.navigate_to("UserLoggedChores", self.user)

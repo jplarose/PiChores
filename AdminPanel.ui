@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>AdminPanel</class>
- <widget class="QWidget" name="AdminPanel">
+ <class>AdminPanel_Page</class>
+ <widget class="QWidget" name="AdminPanel_Page">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -10,23 +10,101 @@
     <height>480</height>
    </rect>
   </property>
+  <property name="toolTipDuration">
+   <number>0</number>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="adminLabel">
-     <property name="text">
-      <string>Admin Panel</string>
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0">
+     <property name="spacing">
+      <number>6</number>
      </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
+     <property name="sizeConstraint">
+      <enum>QLayout::SetDefaultConstraint</enum>
      </property>
-     <property name="styleSheet">
-      <string>font-size: 24px; font-weight: bold;</string>
+     <property name="leftMargin">
+      <number>5</number>
      </property>
-    </widget>
+     <item>
+      <widget class="QPushButton" name="go_home_button">
+       <property name="minimumSize">
+        <size>
+         <width>125</width>
+         <height>75</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>125</width>
+         <height>75</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>← Back</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>150</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="adminLabel">
+       <property name="maximumSize">
+        <size>
+         <width>400</width>
+         <height>40</height>
+        </size>
+       </property>
+       <property name="toolTipDuration">
+        <number>0</number>
+       </property>
+       <property name="styleSheet">
+        <string>font-size: 24px; font-weight: bold;</string>
+       </property>
+       <property name="text">
+        <string>Admin Panel</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>280</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
    </item>
    <item>
-    <widget class="QTableWidget" name="logTable"/>
+    <layout class="QHBoxLayout" name="UsersAreaLayout"/>
    </item>
   </layout>
  </widget>
+ <resources/>
+ <connections/>
 </ui>

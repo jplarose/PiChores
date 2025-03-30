@@ -14,9 +14,6 @@ class UserLoggedChores(QWidget):
         # Load the UI from the .ui file.
         uic.loadUi("UserLoggedChores.ui", self)
 
-        # The following widgets are now defined in the .ui file:
-        #   - self.weekLabel, self.daysLayout, self.prevButton, self.nextButton, self.backButton
-
         # Connect the navigation buttons.
         self.prevButton.clicked.connect(lambda: self.change_week(-1))
         self.nextButton.clicked.connect(lambda: self.change_week(1))

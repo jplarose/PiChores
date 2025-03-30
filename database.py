@@ -32,17 +32,19 @@ def was_chore_logged_recently(user_id, chore_id, selected_date, frequency):
         WHERE UserId = ? AND ChoreId = ?
     """
 
+    params = (user_id, chore_id)
+
     try:
         with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
-            cursor.execute(sql, (user_id, chore_id))
+            cursor.execute(sql, params)
             rows = cursor.fetchall()
 
-            for (date_str,) in rows:
-                logged_date = datetime.strptime(date_str, "%Y-%m-%d %H:%M")
+            for date_str in rows:
+                logged_date = datetime.strptime(date_str[0].split(" ")[0], "%Y-%m-%d").date()
 
                 if frequency == "daily":
-                    if logged_date.date() == selected_date.date():
+                    if logged_date == selected_date:
                         return True
 
                 elif frequency == "weekly":
@@ -51,12 +53,12 @@ def was_chore_logged_recently(user_id, chore_id, selected_date, frequency):
                     start_of_week = selected_date - timedelta(days=weekday)
                     end_of_week = start_of_week + timedelta(days=6)
 
-                    if start_of_week.date() <= logged_date.date() <= end_of_week.date():
+                    if start_of_week <= logged_date <= end_of_week:
                         return True
 
             return False
     except Exception as e:
-        print(f"Error checking chore frequency: {e}")
+        print(f"* Error checking chore frequency: {e}")
         return False
 
 
@@ -64,7 +66,7 @@ def get_users():
     """Fetch users from the database as named tuples."""
 
     sql = (
-    "SELECT Name AS Name, Id as Id "
+    "SELECT Name AS Name, Id as Id, IsAdmin as IsAdmin "
     "FROM Users "
     "WHERE IsVisible = 1"
     )
@@ -73,7 +75,30 @@ def get_users():
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
         cursor.execute(sql)
-        User = namedtuple("User", ["Name", "Id"])
+        User = namedtuple("User", ["Name", "Id", "IsAdmin"])
+        users = [User(*row) for row in cursor.fetchall()]
+        cursor.close()
+        conn.close()
+        return users
+    except Exception as e:
+        print(f"Database error: {e}")
+        return []
+
+def get_admin():
+    """Fetch users from the database as named tuples."""
+
+    sql = (
+    "SELECT Name AS Name, Id as Id, IsAdmin as IsAdmin "
+    "FROM Users "
+    "WHERE IsVisible = 0 "
+    "AND IsAdmin = 1"
+    )
+
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute(sql)
+        User = namedtuple("User", ["Name", "Id", "IsAdmin"])
         users = [User(*row) for row in cursor.fetchall()]
         cursor.close()
         conn.close()
@@ -217,14 +242,38 @@ def get_users_chores(user_id):
 def fetch_chores_for_date(selected_date, user_id):
     try:
         sql = (
+            "SELECT cl.Id AS chore_log_id, c.ChoreName AS description, cl.DateCompleted AS timestamp "
+            "FROM ChoreLog cl "
+            "INNER JOIN Chores c ON cl.ChoreId = c.Id "
+            "WHERE cl.UserId = ? "
+            "AND cl.DateCompleted LIKE ? "
+            "AND cl.IsDeleted = 0"
+        )
+
+        params = (user_id, f"{selected_date}%")
+
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            cursor.execute(sql, params)
+            Chore = namedtuple("Chore", ["chore_log_id", "description", "timestamp"])
+            chores = [Chore(*row) for row in cursor.fetchall()]
+
+            return chores
+    except Exception as e:
+        print(f"Database error: {e}")
+        return None
+
+def fetch_chores_for_week(selected_dates, user_id):
+    try:
+        sql = (
             "SELECT cl.Id AS chore_id, c.ChoreName AS description, cl.DateCompleted AS timestamp "
             "FROM ChoreLog cl "
             "INNER JOIN Chores c ON cl.ChoreId = c.Id "
             "WHERE cl.UserId = ? "
-            "AND cl.DateCompleted LIKE ?"
+            "AND cl.DateCompleted IN ?"
         )
 
-        params = (user_id, f"{selected_date}%")
+        params = (user_id, f"{selected_dates}%")
 
         with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
@@ -237,9 +286,26 @@ def fetch_chores_for_date(selected_date, user_id):
         print(f"Database error: {e}")
         return None
 
-def delete_chore_by_id(chore_id):
-    """TODO!!!"""
-    pass
+def delete_chore_by_id(chore_log_id):
+
+    sql = (
+        "UPDATE ChoreLog "
+        "SET IsDeleted = 1, "
+        "DeletedOn = ? "
+        "WHERE Id = ?"
+    )
+
+    params = (datetime.now().strftime("%Y-%m-%d %H:%M"), chore_log_id)
+
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            cursor = conn.cursor()
+            cursor.execute(sql, params)
+            conn.commit()
+            return True
+    except Exception as e:
+        print(f"Error Deleting Chore Log: {e}")
+        return False
 
 def get_chore_dates_in_week(start_date, user_id):
     """Returns a set of date objects for days that have chore logs in a 7-day range."""
@@ -250,6 +316,7 @@ def get_chore_dates_in_week(start_date, user_id):
         "FROM ChoreLog "
         "WHERE (date(DateCompleted) BETWEEN ? AND ?) "
         "AND UserId = ? "
+        "AND IsDeleted = 0 "
         "GROUP BY day"
     )
 

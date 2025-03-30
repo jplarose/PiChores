@@ -10,7 +10,6 @@
         "UserPage.ui",
         "AuthPage.ui",
         "UserHome.ui",
-        "AdminPanel.ui",
         "ChoreLog.ui",
         "ChoreLog.py",
         "ChorePage.ui",
@@ -18,7 +17,8 @@
         "UserLoggedChores.ui",
         "UserLoggedChores.py",
         "DayLogPopup.py",
-        "DayLogPopup.ui"
+        "DayLogPopup.ui",
+        "AdminPanel.ui"
     ],
     "python_interpreter": "/usr/bin/python3",
     "run_configuration": {

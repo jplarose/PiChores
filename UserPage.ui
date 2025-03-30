@@ -13,14 +13,14 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QLabel" name="titleLabel">
+     <property name="styleSheet">
+      <string>font-size: 24px; font-weight: bold;</string>
+     </property>
      <property name="text">
       <string>Select Your User</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
-     </property>
-     <property name="styleSheet">
-      <string>font-size: 24px; font-weight: bold;</string>
      </property>
     </widget>
    </item>
@@ -30,10 +30,20 @@
       <bool>true</bool>
      </property>
      <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>780</width>
+        <height>427</height>
+       </rect>
+      </property>
       <layout class="QVBoxLayout" name="userLayout"/>
      </widget>
     </widget>
    </item>
   </layout>
  </widget>
+ <resources/>
+ <connections/>
 </ui>
