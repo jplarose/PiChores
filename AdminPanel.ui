@@ -39,6 +39,12 @@
          <height>75</height>
         </size>
        </property>
+       <property name="font">
+        <font>
+         <pointsize>20</pointsize>
+         <bold>true</bold>
+        </font>
+       </property>
        <property name="text">
         <string>← Back</string>
        </property>

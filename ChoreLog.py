@@ -29,7 +29,8 @@ class ChoreLog(QWidget):
         layout = self.findChild(QGridLayout, "choreButtonGridLayout")
         for i, chore in enumerate(chores):
             btn = QPushButton(chore.Name)
-            btn.setFixedHeight(80)  # Large button for touchscreens
+            btn.setFixedHeight(80)
+            btn.setStyleSheet("font: 25px; font-weight: bold")
             btn.clicked.connect(lambda _, c=chore: self.navigator.navigate_to_chore("ChorePage", self.user, c))
             row = i // 3  # 3 buttons per row
             col = i % 3

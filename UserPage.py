@@ -39,9 +39,11 @@ class UserPage(QWidget):
 
         for index, user in enumerate(users):
             btn = QPushButton(user.Name)
-            btn.setFixedHeight(160)  # Large button for touchscreens
+            btn.setFixedHeight(160)
+            btn.setStyleSheet("font-size: 35px; font-weight: bold")
+
             if index == 0 and not is_admin:
-                # For the first button, detect a long press of 10 seconds.
+                # 5 second long press to access Admin login page
                 timer = QtCore.QTimer(btn)
                 timer.setSingleShot(True)
                 timer.setInterval(5000)  # 5 seconds
@@ -57,7 +59,7 @@ class UserPage(QWidget):
 
                 def on_timeout():
                     self.long_press_triggered = True
-                    # Trigger admin sign in after 10 seconds
+                    # Trigger admin sign in after 5 seconds
                     self.navigator.navigate_to_admin("userPage", None, True)
 
                 # Connect the button's pressed and released signals.

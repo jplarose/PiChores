@@ -13,15 +13,8 @@ class DayLogPopup(QWidget):
         # Load the UI from the .ui file.
         uic.loadUi("DayLogPopup.ui", self)
 
-        # The following widgets are now defined in the .ui file:
-        #   self.headerLabel, self.listWidget, self.backButton
-
         # Connect the back button.
         self.backButton.clicked.connect(self.go_back)
-
-        # Set fixed size.
-        self.setMinimumSize(800, 480)
-        self.setMaximumSize(800, 480)
 
     def update_page(self, user, selected_date):
         self.user = user

@@ -13,45 +13,49 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <!-- Main Vertical Layout -->
   <layout class="QVBoxLayout" name="verticalLayout">
-   <!-- Top Row: Back Button and Centered Title -->
    <item>
     <layout class="QHBoxLayout" name="topRowLayout">
-     <!-- Back Button -->
      <item>
       <widget class="QPushButton" name="GoBackButton">
-       <property name="text">
-        <string>← Back</string>
-       </property>
        <property name="minimumSize">
         <size>
          <width>180</width>
          <height>60</height>
         </size>
        </property>
+       <property name="font">
+        <font>
+         <pointsize>25</pointsize>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>← Back</string>
+       </property>
       </widget>
      </item>
-     <!-- Left Expanding Spacer -->
      <item>
       <spacer name="leftSpacer">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-         <horStretch>0</horStretch>
-         <verStretch>0</verStretch>
-        </sizepolicy>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
        </property>
       </spacer>
      </item>
-     <!-- Title Label -->
      <item>
       <widget class="QLabel" name="chore_log_title">
-       <property name="text">
-        <string>Chore Log</string>
-       </property>
        <property name="font">
         <font>
          <pointsize>35</pointsize>
@@ -59,28 +63,35 @@
          <underline>true</underline>
         </font>
        </property>
+       <property name="text">
+        <string>Chore Log</string>
+       </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </item>
-     <!-- Right Expanding Spacer -->
      <item>
       <spacer name="rightSpacer">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-         <horStretch>0</horStretch>
-         <verStretch>0</verStretch>
-        </sizepolicy>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
        </property>
       </spacer>
      </item>
-     <!-- Dummy Widget with fixed width to balance the back button -->
      <item>
-      <widget class="QWidget" name="dummyWidget">
+      <widget class="QWidget" name="dummyWidget" native="true">
        <property name="minimumSize">
         <size>
          <width>180</width>
@@ -91,13 +102,12 @@
      </item>
     </layout>
    </item>
-   <!-- Vertical Spacer between Top Row and Chore Grid -->
    <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint">
+     <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
        <height>20</height>
@@ -105,19 +115,15 @@
      </property>
     </spacer>
    </item>
-   <!-- Chore Grid Area -->
    <item>
-    <widget class="QWidget" name="choreButtonsWidget">
-     <layout class="QGridLayout" name="choreButtonGridLayout"/>
-    </widget>
+    <layout class="QGridLayout" name="choreButtonGridLayout"/>
    </item>
-   <!-- Optional Bottom Spacer -->
    <item>
     <spacer name="verticalSpacerBottom">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint">
+     <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
        <height>20</height>

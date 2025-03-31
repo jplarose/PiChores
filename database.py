@@ -27,10 +27,11 @@ def log_action(user_id, action, message=None):
 
 def was_chore_logged_recently(user_id, chore_id, selected_date, frequency):
     """Check if a chore has already been logged today or this week"""
-    sql = """
-        SELECT DateCompleted FROM ChoreLog
-        WHERE UserId = ? AND ChoreId = ?
-    """
+    sql = (
+        "SELECT DateCompleted FROM ChoreLog "
+        "WHERE UserId = ? AND ChoreId = ? "
+        "AND IsDeleted = 0"
+    )
 
     params = (user_id, chore_id)
 
@@ -157,7 +158,8 @@ def get_weeks_earnings(user_id, week_of_date):
         "FROM ChoreLog cl "
         "INNER JOIN Chores c ON c.Id = cl.ChoreId "
         "WHERE cl.UserId = ? "
-        "AND cl.DateCompleted BETWEEN ? AND DateTime()"
+        "AND cl.DateCompleted BETWEEN ? AND DateTime() "
+        "AND cl.IsDeleted = 0"
     )
 
     params = (user_id, week_of_date)
@@ -181,7 +183,8 @@ def get_years_earnings(user_id):
         "FROM ChoreLog cl "
         "INNER JOIN Chores c ON c.Id = cl.ChoreId "
         "WHERE cl.UserId = ? "
-        "AND cl.DateCompleted BETWEEN ? AND DateTime()"
+        "AND cl.DateCompleted BETWEEN ? AND DateTime() "
+        "AND cl.IsDeleted = 0"
     )
 
     start_of_year = date.today().replace(month=1, day=1)
