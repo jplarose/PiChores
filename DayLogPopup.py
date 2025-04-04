@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QDialog, QListWidgetItem, QWidget, QHBoxLayout, QLabel, QPushButton, QMessageBox
 from PyQt5 import uic
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QEasingCurve
+from PyQt5.QtWidgets import QScroller, QScrollerProperties
 from database import fetch_chores_for_date, delete_chore_by_id
 
 class DayLogPopup(QWidget):
@@ -12,6 +13,36 @@ class DayLogPopup(QWidget):
 
         # Load the UI from the .ui file.
         uic.loadUi("DayLogPopup.ui", self)
+
+        self.listWidget.setAttribute(Qt.WA_AcceptTouchEvents)
+
+        # Enable kinetic scrolling using QScroller
+        scroller = QScroller.scroller(self.listWidget.viewport())
+        QScroller.grabGesture(self.listWidget.viewport(), QScroller.TouchGesture)
+        QScroller.grabGesture(self.listWidget.viewport(), QScroller.LeftMouseButtonGesture)
+
+        # Retrieve current scroller properties
+        props = scroller.scrollerProperties()
+
+        # Adjust the deceleration factor (lower values result in slower deceleration)
+        props.setScrollMetric(QScrollerProperties.DecelerationFactor, 0.05)
+
+        # Optionally adjust maximum velocity (lowering it can make scrolling feel more controlled)
+        props.setScrollMetric(QScrollerProperties.MaximumVelocity, 0.2)
+
+        # Disable overshoot if it's causing jitter (or experiment with different policies)
+        props.setScrollMetric(QScrollerProperties.HorizontalOvershootPolicy, QScrollerProperties.OvershootAlwaysOff)
+        props.setScrollMetric(QScrollerProperties.VerticalOvershootPolicy, QScrollerProperties.OvershootAlwaysOff)
+
+        # Apply a custom scrolling curve for smoother deceleration (OutQuad is usually a gentle curve)
+        curve = QEasingCurve(QEasingCurve.OutQuad)
+        props.setScrollMetric(QScrollerProperties.ScrollingCurve, curve)
+
+        # Adjust the drag velocity smoothing factor to reduce abrupt changes in scrolling speed
+        props.setScrollMetric(QScrollerProperties.DragVelocitySmoothingFactor, 0.3)
+
+        # Apply the updated properties
+        scroller.setScrollerProperties(props)
 
         # Connect the back button.
         self.backButton.clicked.connect(self.go_back)

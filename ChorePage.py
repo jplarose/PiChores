@@ -34,23 +34,23 @@ class ChorePage(QWidget):
 
     def handle_log_chore(self):
         """Controller method: orchestrates the logging of a chore"""
-        selected_pydate, selected_date_str = self._get_selected_date()
+        selected_pydate, selected_date_str = self.get_selected_date()
 
-        if not self._confirm_future_date(selected_pydate, selected_date_str):
+        if not self.confirm_future_date(selected_pydate, selected_date_str):
             return
 
-        if not self._check_and_confirm_frequency(selected_pydate, selected_date_str):
+        if not self.check_and_confirm_frequency(selected_pydate, selected_date_str):
             return
 
-        self._log_chore_and_notify(selected_date_str)
+        self.log_chore_and_notify(selected_date_str)
 
-    def _get_selected_date(self):
+    def get_selected_date(self):
         qdate = self.chore_calendar.selectedDate()
         pydate = qdate.toPyDate()
         date_str = pydate.strftime("%Y-%m-%d %H:%M")
         return pydate, date_str
 
-    def _confirm_future_date(self, selected_pydate, date_str):
+    def confirm_future_date(self, selected_pydate, date_str):
         if selected_pydate > date.today():
             confirm_box = QMessageBox(self)
 
@@ -77,7 +77,7 @@ class ChorePage(QWidget):
                        f"User confirmed future date chore log for Chore Id {self.chore.Id} on {date_str}")
         return True
 
-    def _check_and_confirm_frequency(self, selected_pydate, date_str):
+    def check_and_confirm_frequency(self, selected_pydate, date_str):
         freq = self.chore.Frequency.lower()
         if freq in ["daily", "weekly"]:
             already_logged = was_chore_logged_recently(
@@ -109,7 +109,7 @@ class ChorePage(QWidget):
                            f"User confirmed repeat log of Chore Id {self.chore.Id} on {date_str} (Frequency: {self.chore.Frequency})")
         return True
 
-    def _log_chore_and_notify(self, date_str):
+    def log_chore_and_notify(self, date_str):
         result = log_chore(self.user.Id, self.chore.Id, date_str)
         msg = QMessageBox(self)
 
