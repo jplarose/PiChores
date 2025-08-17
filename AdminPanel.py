@@ -7,11 +7,10 @@ import sys
 
 def get_current_date_string():
     current_date = datetime.datetime.now()
-    week = current_date.strftime("%W")
-    year = current_date.strftime("%Y")
-
-    week = int(week) + 1
-
+    # Use ISO week date format (%G-%V) to get correct year and week
+    year = current_date.strftime("%G")  # ISO year
+    week = current_date.strftime("%V")  # ISO week (01-53)
+    
     return f'{year}-W{week}'
 
 class AdminPanel(QWidget):
@@ -46,7 +45,8 @@ class AdminPanel(QWidget):
 
             # Get the number of chores and their sum from last week
             week_earnings = get_weeks_earnings(person.Id, earning_date)
-            week_earned = sum(e.ChoreValue for e in week_earnings)
+            # Handle potential None return from database errors
+            week_earned = sum(e.ChoreValue for e in week_earnings) if week_earnings else 0
 
             user_widget = QWidget()
             user_layout = QVBoxLayout(user_widget)
@@ -67,7 +67,8 @@ class AdminPanel(QWidget):
             name_label.setFont(label_font)
 
             # Completed chores label
-            chores_label = QLabel(f"Completed {len(week_earnings)} Chores: ${week_earned:,.2f}")
+            chore_count = len(week_earnings) if week_earnings else 0
+            chores_label = QLabel(f"Completed {chore_count} Chores: ${week_earned:,.2f}")
             chores_label.setAlignment(QtCore.Qt.AlignCenter)
             chores_font = chores_label.font()
             chores_font.setPointSize(20)

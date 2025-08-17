@@ -7,11 +7,10 @@ from PyQt5.QtWidgets import QWidget
 
 def get_current_date_string():
     current_date = datetime.datetime.now()
-    week = current_date.strftime("%W")
-    year = current_date.strftime("%Y")
-
-    week = int(week) + 1
-
+    # Use ISO week date format (%G-%V) to get correct year and week
+    year = current_date.strftime("%G")  # ISO year
+    week = current_date.strftime("%V")  # ISO week (01-53)
+    
     return f'{year}-W{week}'
 
 
@@ -38,8 +37,9 @@ class UserHome(QWidget):
         week_earnings = get_weeks_earnings(user.Id, earning_date)
         year_earnings = get_years_earnings(user.Id)
 
-        week_earned = sum(e.ChoreValue for e in week_earnings)
-        year_earned = sum(e.ChoreValue for e in year_earnings)
+        # Handle potential None returns from database errors
+        week_earned = sum(e.ChoreValue for e in week_earnings) if week_earnings else 0
+        year_earned = sum(e.ChoreValue for e in year_earnings) if year_earnings else 0
 
         self.week_earned_value.setText(f"${week_earned:,.2f}")
         self.week_earned_value.setEnabled(True)

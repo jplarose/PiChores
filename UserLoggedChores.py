@@ -24,6 +24,7 @@ class UserLoggedChores(QWidget):
 
     def update_page(self, user):
         self.user = user
+        self.offset_weeks = 0  # Reset to current week when page loads
         self.update_week()
 
     def get_week_dates(self):

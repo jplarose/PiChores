@@ -137,13 +137,15 @@ def get_user_pin(user_id):
     sql = (
     "SELECT Pass "
     "FROM Users "
-    f"WHERE Id = {user_id}"
+    "WHERE Id = ?"
     )
+
+    params = (user_id,)
 
     try:
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
-        cursor.execute(sql)
+        cursor.execute(sql, params)
         result = cursor.fetchone()
         cursor.close()
         conn.close()
